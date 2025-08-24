@@ -61,6 +61,6 @@ app.post("/add-blog",async(req,res)=>{
 })
 
 
-app.listen(3000,()=>{
-    console.log("Port running on 3000");
+app.listen(3001,()=>{
+    console.log("Port running on 3001");
 })
