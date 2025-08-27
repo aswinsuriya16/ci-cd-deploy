@@ -1,17 +1,17 @@
 FROM node:22-alpine
 
-WORKDIR /app
+WORKDIR /app/http-server
 
-COPY ./http-server/package.* .
+COPY ./http-server/package*.json ./
 
 RUN npm install
 
-COPY ./http-server .
-COPY ./prisma .
+COPY ./http-server ./
 
-RUN npm install prisma
+COPY ./prisma ../prisma
+
 RUN npx prisma generate
 
 EXPOSE 3001
 
-CMD ["npm", "run" , "dev"]
+CMD ["npm", "run", "dev"]

@@ -1,25 +1,37 @@
-FROM node:22-alpine 
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-ARG DATABASE_URL
-
-COPY ./frontend/package.json .
-
+# Install deps
+COPY ./frontend/package*.json ./frontend/
+WORKDIR /app/frontend
 RUN npm install
 
-COPY ./frontend .
+# Copy code + prisma
+COPY ./frontend ./ 
+COPY ./prisma ../prisma
 
-COPY ./prisma .
-
-RUN npm install prisma
-
+# Generate Prisma client
 RUN npx prisma generate
 
-# even in the docker build nextjs require the DB connection
+# Build Next.js app (requires DATABASE_URL if your build has DB queries)
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+RUN npm run build
 
-RUN DATABASE_URL=${DATABASE_URL} npm run build
+
+# ---- Production runtime image ----
+FROM node:22-alpine
+
+WORKDIR /app/frontend
+
+COPY --from=builder /app/frontend/package*.json ./
+RUN npm install --only=production
+
+COPY --from=builder /app/frontend/.next ./.next
+COPY --from=builder /app/frontend/public ./public
+COPY --from=builder /app/prisma ../prisma
+COPY --from=builder /app/frontend/node_modules ./node_modules
 
 EXPOSE 3000
-
-CMD [ "npm" , "start"]
+CMD ["npm", "start"]

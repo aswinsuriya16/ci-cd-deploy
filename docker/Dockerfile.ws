@@ -1,12 +1,12 @@
 FROM node:22-alpine
 
-WORKDIR /app
+WORKDIR /app/ws-server
 
-COPY ./ws-server/package.* .
+COPY ./ws-server/package.* ./
 
 RUN npm install
 
-COPY ./ws-server .
+COPY ./ws-server ./
 
 EXPOSE 8080
 
