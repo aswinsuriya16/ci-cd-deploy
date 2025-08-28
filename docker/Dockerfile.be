@@ -1,6 +1,6 @@
 FROM node:22-alpine
 
-WORKDIR /app/http-server
+WORKDIR /app
 
 COPY ./http-server/package*.json ./
 
@@ -8,7 +8,7 @@ RUN npm install
 
 COPY ./http-server ./
 
-COPY ./prisma ../prisma
+COPY ./prisma ./prisma
 
 RUN npx prisma generate
 
