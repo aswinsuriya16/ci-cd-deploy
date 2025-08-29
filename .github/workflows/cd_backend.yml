@@ -1,0 +1,26 @@
+name: Backend Deployment
+on:
+  push:
+    branches: [main]
+jobs:
+  build: # just the name can be deploy , backend ... 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the Code(Clone)
+        uses: actions/checkout@v2
+
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_PASSWORD}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./docker/Dockerfile.be
+          push: true
+          tags: aswinsuriya/ci-cd-deploy:${{github.sha}} ## Docker image format  <registry>/<username-or-org>/<repository>:<tag>
+
+
