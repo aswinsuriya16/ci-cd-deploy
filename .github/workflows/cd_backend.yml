@@ -21,6 +21,6 @@ jobs:
           context: .
           file: ./docker/Dockerfile.be
           push: true
-          tags: aswinsuriya/ci-cd-deploy:${{github.sha}} ## Docker image format  <registry>/<username-or-org>/<repository>:<tag>
+          tags: aswinsuriya/ci-cd-deploy:${{github.sha}} # Docker image format  <registry>/<username-or-org>/<repository>:<tag>
 
 
